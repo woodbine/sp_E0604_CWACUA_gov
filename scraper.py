@@ -61,7 +61,7 @@ def convert_mth_strings ( mth_string ):
     return mth_string
 # pull down the content from the webpage
 html = urllib2.urlopen(url)
-soup = BeautifulSoup(html)
+soup = BeautifulSoup(html, 'lxml')
 # find all entries with the required class
 blocks = soup.find_all('div', 'entry-summary')
 for block in blocks:
@@ -69,7 +69,7 @@ for block in blocks:
     for link in links:
         url = link['href']
         html = urllib2.urlopen(url)
-        soup = BeautifulSoup(html)
+        soup = BeautifulSoup(html, 'lxml')
         contents = soup.find('div', 'entry-content')
         links = contents.find_all('a',  href=True)
         for link in links:
