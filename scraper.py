@@ -69,7 +69,7 @@ for block in blocks:
     for link in links:
         url = link['href']
         html = urllib2.urlopen(url)
-        soup = BeautifulSoup(html, 'lxml')
+        soup = BeautifulSoup(html)
         contents = soup.find('div', 'entry-content')
         links = contents.find_all('a',  href=True)
         for link in links:
@@ -78,13 +78,14 @@ for block in blocks:
                 csvFile = link.text.strip().split('–')[-1]
                 if '-' in csvFile:
                      csvFile = csvFile.split('-')[-1]
-
                 Mth = csvFile.strip().split(' ')[0].strip()
                 csvYr = csvFile.strip().split(' ')[1].strip()
-                dt_m = parse(Mth).strftime('%b')
-                csvMth = dt_m
+                csvMth = Mth[:3]
                 csvMth = convert_mth_strings(csvMth.upper())
-                filename = entity_id + "_" + csvYr + "_" + csvMth
+                if 'Qtr' in url:
+                    filename = 'Q'+entity_id + "_" + csvYr + "_" + csvMth
+                else:
+                    filename = entity_id + "_" + csvYr + "_" + csvMth
                 todays_date = str(datetime.now())
                 file_url = url.strip()
                 validFilename = validateFilename(filename)
