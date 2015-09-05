@@ -69,7 +69,7 @@ for block in blocks:
     for link in links:
         url = link['href']
         html = urllib2.urlopen(url)
-        soup = BeautifulSoup(html)
+        soup = BeautifulSoup(html, 'lxml')
         contents = soup.find('div', 'entry-content')
         links = contents.find_all('a',  href=True)
         for link in links:
