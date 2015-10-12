@@ -102,6 +102,7 @@ soup = BeautifulSoup(html, "lxml")
 import sys
 reload(sys)
 sys.setdefaultencoding('UTF8')
+
 blocks = soup.find_all('div', 'entry-summary')
 for block in blocks:
     links = block.find_all('a', href=True)
