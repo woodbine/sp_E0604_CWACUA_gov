@@ -1,9 +1,7 @@
  #-*- coding: utf-8 -*-
 
 #### IMPORTS 1.0
-import sys
-reload(sys)
-sys.setdefaultencoding('UTF8')
+
 import os
 import re
 import scraperwiki
@@ -101,6 +99,9 @@ soup = BeautifulSoup(html, "lxml")
 
 #### SCRAPE DATA
 
+import sys
+reload(sys)
+sys.setdefaultencoding('UTF8')
 blocks = soup.find_all('div', 'entry-summary')
 for block in blocks:
     links = block.find_all('a', href=True)
