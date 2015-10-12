@@ -51,7 +51,7 @@ def validateURL(url):
         else:
             ext = os.path.splitext(url)[1]
         validURL = r.getcode() == 200
-        validFiletype = ext in ['.csv', '.xls', '.xlsx', '.docx']
+        validFiletype = ext.lower() in ['.csv', '.xls', '.xlsx']
         return validURL, validFiletype
     except:
         print ("Error validating URL.")
@@ -74,6 +74,7 @@ def validate(filename, file_url):
         print file_url
         return False
     return True
+
 
 
 def convert_mth_strings ( mth_string ):
