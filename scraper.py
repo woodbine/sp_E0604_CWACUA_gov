@@ -51,7 +51,7 @@ def validateURL(url):
         else:
             ext = os.path.splitext(url)[1]
         validURL = r.getcode() == 200
-        validFiletype = ext.lower() in ['.csv', '.xls', '.xlsx']
+        validFiletype = ext.lower() in ['.csv', '.xls', '.xlsx', '.zip']
         return validURL, validFiletype
     except:
         print ("Error validating URL.")
@@ -87,7 +87,7 @@ def convert_mth_strings ( mth_string ):
 #### VARIABLES 1.0
 
 entity_id = "E0604_CWACUA_gov"
-url = "http://opendata.cheshirewestandchester.gov.uk/?cat=57"
+url = "http://inside.cheshirewestandchester.gov.uk/find_out_more/datasets_and_statistics/opendata/expenditure_over_500"
 errors = 0
 data = []
 
@@ -104,35 +104,28 @@ import sys
 reload(sys)
 sys.setdefaultencoding('UTF8')
 
-blocks = soup.find_all('div', 'entry-summary')
+blocks = soup.find('ul', 'circle_list').find_all('a')
 for block in blocks:
-    links = block.find_all('a', href=True)
-    for link in links:
-        url = link['href']
-        html = urllib2.urlopen(url)
-        soup = BeautifulSoup(html, 'lxml')
-        contents = soup.find('div', 'entry-content')
-        links = contents.find_all('a',  href=True)
-        for link in links:
-            url = link['href']
-            if 'csv' in url:
-                csvFile = link.text.strip().split('–')[-1]
-                if '-' in csvFile:
-                     csvFile = csvFile.split('-')[-1]
-                Mth = csvFile.strip().split(' ')[0].strip()
-                csvYr = csvFile.strip().split(' ')[1].strip()
-                csvMth = Mth[:3]
-                csvMth = convert_mth_strings(csvMth.upper())
-                if 'Qtr' in url:
-                    if '06' in csvMth:
-                        csvMth = 'Q2'
-                    if '03' in csvMth:
-                        csvMth = 'Q1'
-                    if '09' in csvMth:
-                        csvMth = 'Q3'
-                    if '12' in csvMth:
-                        csvMth = 'Q4'
-                data.append([csvYr, csvMth, url])
+    nav_link = 'http://inside.cheshirewestandchester.gov.uk'+block['href']
+    html = urllib2.urlopen(nav_link)
+    soup = BeautifulSoup(html, "lxml")
+    blocks = soup.find('table', 'standard-table mini-ico- add-top').find_all('a')
+    for block in blocks:
+        url = block['href']
+        title = block.text.strip()
+        if 'Quarter 1' in title:
+            csvMth = 'Q1'
+        if 'Quarter 2' in title:
+            csvMth = 'Q2'
+        if 'Quarter 3' in title:
+            csvMth = 'Q3'
+        if 'Quarter 4' in title:
+            csvMth = 'Q4'
+        csvYr = title.split('-')[1][-4:]
+        if '16' in csvYr:
+            csvYr = title.split('-')[0][-4:]
+        csvMth = convert_mth_strings(csvMth.upper())
+        data.append([csvYr, csvMth, url])
 
 
 #### STORE DATA 1.0
